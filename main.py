@@ -11,16 +11,11 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Dodge")
 BG = pygame.transform.scale(pygame.image.load("bg.jpg"),(WIDTH, HEIGHT))
 
+#LOAD AND PLAY THE MAIN MUSIC FILE
 pygame.mixer.init()
-pygame.mixer.music.load('song.mp3')
+pygame.mixer.music.load('screech1.mp3')
 pygame.mixer.music.play(loops=2, start=1)
 pygame.mixer.music.set_volume(0.5)
-pygame.mixer.init()
-pygame.mixer.music.unload()
-pygame.mixer.music.load('song.mp3')
-pygame.mixer.music.play(loops=2, start=1)
-pygame.mixer.music.set_volume(0.5)
-
 
 
 #THE DRAWER
