@@ -6,14 +6,14 @@ BG = 'assets/bg.jpg'
 SOUND1 = 'assets/screech1.mp3'
 
 #CONSTANTS
-FPS = 90
+FPS = 60
 WIDTH, HEIGHT = 800, 600
 PLAYER_WIDTH, PLAYER_HEIGHT = 75, 65
-PLAYER_VELOCITY = 6
+PLAYER_VELOCITY = 12
 SHOOTER_STARTING_X = WIDTH/2 - PLAYER_WIDTH/2
 SHOOTER_STARTING_Y = HEIGHT - PLAYER_HEIGHT - 10
-MAX_BULLETS = 100
-BULLET_VEL = 10
+MAX_BULLETS = 3
+BULLET_VEL = 3
 SHOOTER_HIT = pygame.USEREVENT + 1
 
 bullets= []
@@ -32,11 +32,12 @@ TRANS.set_alpha(128)
 BG.blit(TRANS, (0,0))
 
 #LOAD AND PLAY THE MAIN MUSIC FILE
-def playSound():
+def playSound(track):
     pygame.mixer.init()
-    pygame.mixer.music.load(SOUND1)
-    pygame.mixer.music.play(loops=2, start=1)
-    pygame.mixer.music.set_volume(0.5)
+    if track == 1:
+        pygame.mixer.music.load(SOUND1)
+        pygame.mixer.music.play(loops=2, start=1)
+        pygame.mixer.music.set_volume(0.5)
 
 def shooterMovement(keys, shooter):
     if keys[pygame.K_LEFT] and shooter.x - PLAYER_VELOCITY >= 0:
@@ -51,7 +52,7 @@ def shooterMovement(keys, shooter):
 def fireMovement(bullets, shooter):
     for bullet in bullets:
         bullet.y -= BULLET_VEL
-        if bullet.colliderect(shooter):
+        if bullet.colliderect(shooter) or bullet.y < 0:
             pygame.event.post(pygame.event.Event(SHOOTER_HIT))
             bullets.remove(bullet)
 
@@ -67,6 +68,7 @@ def draw(shooter, bullets):
 
 #THE MAIN FUNCTION
 def main():
+    playSound(1)
     shooter = pygame.Rect(SHOOTER_STARTING_X, SHOOTER_STARTING_Y, PLAYER_WIDTH, PLAYER_HEIGHT)
 
     #TICKS - Basically an FPS
@@ -74,7 +76,7 @@ def main():
 
     global run
     while run:
-        clock.tick(60)
+        clock.tick(FPS)
 
         #EXIT CONDITION
         for event in pygame.event.get():
@@ -86,13 +88,13 @@ def main():
         shooterMovement(keys, shooter)
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LCTRL and (len(bullets) < MAX_BULLETS):
+            if ((event.key == pygame.K_RETURN) or (event.key == pygame.K_SPACE)) and (len(bullets) < MAX_BULLETS):
                 bullet = pygame.Rect(shooter.x + shooter.width//2, shooter.y - 10, 2, 4)
                 bullets.append(bullet)
 
         fireMovement(bullets, shooter)
         
-        #DRAW THE CODE
+        #DRAW THE DISPLAY
         draw(shooter, bullets)
         
 
